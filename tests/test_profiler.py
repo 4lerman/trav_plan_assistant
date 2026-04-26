@@ -28,11 +28,13 @@ class TestConstraintProfilerHappyPath:
         state["messages"] = [
             HumanMessage(content=(
                 "I use a wheelchair and need full step-free access everywhere. "
-                "I keep halal — strictly. No medical needs. "
-                "My daily budget is €80. I travel with a Wise card. "
+                "I keep halal — strictly. "
+                "I explicitly consent to you collecting medical needs, but I have no medical needs. "
+                "My daily budget is 80 EUR. My base currency is EUR. "
                 "I prefer strictly accessible accommodation. "
                 "If there's a disruption, replan immediately. "
-                "I'm happy for you to auto-apply offline fallbacks up to 2 steps."
+                "I'm happy for you to auto-apply offline fallbacks up to 2 steps. "
+                "My language is English."
             ))
         ]
 
@@ -65,10 +67,20 @@ class TestConstraintProfilerHappyPath:
         initial_state["profile"] = v1
         initial_state["profile_history"] = [v1]
         initial_state["messages"] = [
-            HumanMessage(content="Actually my budget is €100 per day, not €80.")
+            HumanMessage(content=(
+                "I use a wheelchair and need full step-free access everywhere. "
+                "I keep halal — strictly. "
+                "I explicitly consent to you collecting medical needs, but I have no medical needs. "
+                "Actually my daily budget is 100 EUR. My base currency is EUR. "
+                "I prefer strictly accessible accommodation. "
+                "If there's a disruption, replan immediately. "
+                "I'm happy for you to auto-apply offline fallbacks up to 2 steps. "
+                "My language is English."
+            ))
         ]
 
         result = run_profiler_turn(initial_state)
+        print("LLM RESPONSE:", result.get("messages", [])[-1].content)
         assert result["profile"].version_id == 2
 
 

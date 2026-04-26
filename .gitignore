@@ -73,7 +73,6 @@ test-results/
 *.tmp
 tmp/
 
-*.db
 .agents
 .claude
 docs/
