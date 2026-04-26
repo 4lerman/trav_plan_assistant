@@ -1,10 +1,74 @@
-# Python-generated files
+# ── Python ────────────────────────────────────────────────────────────────────
 __pycache__/
 *.py[oc]
+*.pyo
+*.pyd
+*.so
+
+# ── Build / dist ──────────────────────────────────────────────────────────────
 build/
 dist/
 wheels/
-*.egg-info
+*.egg-info/
+*.egg
+MANIFEST
+.eggs/
 
-# Virtual environments
-.venv
+# ── Virtual environments (uv / venv / poetry) ─────────────────────────────────
+.venv/
+venv/
+env/
+.env/
+
+# ── Environment / secrets ─────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── uv ────────────────────────────────────────────────────────────────────────
+# uv.lock is intentionally committed for reproducibility
+.uv-cache/
+
+# ── LangGraph / SQLite checkpointers ─────────────────────────────────────────
+*.db
+*.db-shm
+*.db-wal
+
+# ── Pytest / test artifacts ───────────────────────────────────────────────────
+.pytest_cache/
+.hypothesis/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+junit.xml
+test-results/
+
+# ── Type checkers ─────────────────────────────────────────────────────────────
+.mypy_cache/
+.dmypy.json
+.pyright/
+.ruff_cache/
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── IDEs ──────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── macOS ─────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ── Logs / tmp ────────────────────────────────────────────────────────────────
+*.log
+*.tmp
+tmp/
