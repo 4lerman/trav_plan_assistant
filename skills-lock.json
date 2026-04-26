@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "MCP Integration": {
+      "source": "anthropics/claude-code",
+      "sourceType": "github",
+      "computedHash": "99cfef49810cb80a39762a79dbb6a80d486ea56cfa1a81ed10cae0a5a296b496"
+    },
+    "prompt-engineer": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "computedHash": "3cec4622cbb6e6794be3eb25186e4a4d8f6c19816f79abbd5f5eed1830d9e559"
+    },
+    "rag-engineer": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "computedHash": "09a5e174bca621f134235ec59e942499c6298101cc72effda9b7b9046baf6806"
+    }
+  }
+}

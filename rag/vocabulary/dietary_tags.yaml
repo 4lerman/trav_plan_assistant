@@ -1,0 +1,13 @@
+# Controlled vocabulary for dietary_tags — extended in Phase 3
+# Tags here are the canonical forms. Free text is mapped onto these by the profiler.
+tags:
+  - halal
+  - halal_strict
+  - kosher
+  - kosher_strict
+  - vegan
+  - vegetarian
+  - gluten_free
+  - nut_free
+  - dairy_free
+  - shellfish_free
