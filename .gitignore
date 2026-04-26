@@ -72,3 +72,10 @@ test-results/
 *.log
 *.tmp
 tmp/
+
+*.db
+.agents
+.claude
+docs/
+
+CLAUDE.md
