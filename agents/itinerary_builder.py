@@ -88,7 +88,7 @@ def run_itinerary_builder(state: TripState) -> dict:
     user_prompt = f"Please build a {days}-day itinerary using these options: {context_str}"
     
     response = _client.messages.create(
-        model="claude-3-5-sonnet-20241022",
+        model="claude-haiku-4-5-20251001",
         max_tokens=2048,
         system=_SYSTEM_PROMPT,
         messages=[{"role": "user", "content": user_prompt}],

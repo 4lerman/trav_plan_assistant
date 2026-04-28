@@ -13,13 +13,13 @@ SAMPLE_DOCS = [
             wheelchair_accessible=True,
             step_free_routes=True,
             accessible_restrooms=True,
-            notes="Elevator available to main dining room."
+            notes="Elevator available to main dining room.",
         ),
         avg_cost_per_person=60.0,
         currency="EUR",
         source="corpus",
         source_reliability=0.9,
-        last_verified="2026-04-20T10:00:00Z"
+        last_verified="2026-04-20T10:00:00Z",
     ),
     DestinationDoc(
         doc_id="doc_002",
@@ -33,13 +33,13 @@ SAMPLE_DOCS = [
             wheelchair_accessible=True,
             step_free_routes=True,
             accessible_restrooms=True,
-            notes="Ramp access from the pier."
+            notes="Ramp access from the pier.",
         ),
         avg_cost_per_person=25.0,
         currency="EUR",
         source="corpus",
         source_reliability=0.95,
-        last_verified="2026-04-21T09:00:00Z"
+        last_verified="2026-04-21T09:00:00Z",
     ),
     DestinationDoc(
         doc_id="doc_003",
@@ -53,13 +53,13 @@ SAMPLE_DOCS = [
             wheelchair_accessible=True,
             step_free_routes=True,
             accessible_restrooms=True,
-            notes="Roll-in showers in ground floor rooms."
+            notes="Roll-in showers in ground floor rooms.",
         ),
         avg_cost_per_person=150.0,
         currency="EUR",
         source="corpus",
         source_reliability=0.85,
-        last_verified="2026-04-22T11:00:00Z"
+        last_verified="2026-04-22T11:00:00Z",
     ),
     DestinationDoc(
         doc_id="doc_004",
@@ -73,13 +73,13 @@ SAMPLE_DOCS = [
             wheelchair_accessible=False,
             step_free_routes=False,
             accessible_restrooms=False,
-            notes="Historic building, no elevator, 3 steps at entrance."
+            notes="Historic building, no elevator, 3 steps at entrance.",
         ),
         avg_cost_per_person=15.0,
         currency="EUR",
         source="corpus",
         source_reliability=0.9,
-        last_verified="2026-04-23T14:00:00Z"
+        last_verified="2026-04-23T14:00:00Z",
     ),
     DestinationDoc(
         doc_id="doc_005",
@@ -93,12 +93,12 @@ SAMPLE_DOCS = [
             wheelchair_accessible=True,
             step_free_routes=True,
             accessible_restrooms=True,
-            notes="Wheelchairs available for loan at the information desk."
+            notes="Wheelchairs available for loan at the information desk.",
         ),
         avg_cost_per_person=22.0,
         currency="EUR",
         source="corpus",
         source_reliability=1.0,
-        last_verified="2026-04-25T16:00:00Z"
-    )
+        last_verified="2026-04-25T16:00:00Z",
+    ),
 ]

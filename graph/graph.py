@@ -21,6 +21,7 @@ def route(state: dict) -> str:
 def _stub_node(name: str):
     def node(state: TripState) -> dict:
         return {"messages": [AIMessage(content=f"[{name} stub — not yet implemented]")]}
+
     node.__name__ = name
     return node
 
@@ -30,11 +31,12 @@ def build_graph():
 
     # Real node — added in Task 6
     from agents.constraint_profiler import constraint_profiler_node
+
     builder.add_node("constraint_profiler", constraint_profiler_node)
 
     from agents.destination_research import destination_research_node
     from agents.itinerary_builder import itinerary_builder_node
-    
+
     builder.add_node("destination_research", destination_research_node)
     builder.add_node("itinerary_builder", itinerary_builder_node)
     builder.add_node("replanning", _stub_node("replanning"))

@@ -6,7 +6,6 @@ Usage:
     uv run python cli.py
 """
 from __future__ import annotations
-import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -49,6 +48,15 @@ def main():
         if messages:
             last = messages[-1]
             print(f"\nAssistant: {last.content}\n")
+
+        # Display itinerary if generated
+        itinerary = result.get("itinerary")
+        if itinerary:
+            print("-" * 20)
+            print(f"--- {itinerary.days}-DAY ITINERARY ---")
+            for stop in itinerary.stops:
+                print(f"[{stop.type.upper()}] {stop.name}")
+            print("-" * 20 + "\n")
 
 
 if __name__ == "__main__":

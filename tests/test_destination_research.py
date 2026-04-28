@@ -41,3 +41,44 @@ def test_research_skips_when_no_profile():
     state = empty_state("session_1")
     result = destination_research_node(state)
     assert result == {}
+
+
+def test_research_skips_when_no_messages(sample_profile_version):
+    state = empty_state("session_1")
+    state["profile"] = sample_profile_version
+    result = destination_research_node(state)
+    assert result == {}
+
+
+def test_research_increments_state_version(sample_profile_version):
+    state = empty_state("session_1")
+    state["profile"] = sample_profile_version
+    state["messages"] = [HumanMessage(content="find hotels")]
+    state["state_version"] = 3
+
+    with patch("agents.destination_research.retrieve") as mock_retrieve, \
+         patch("agents.destination_research.rerank") as mock_rerank:
+        mock_retrieve.return_value = [{"doc_id": "1", "name": "Hotel"}]
+        mock_rerank.return_value = [{"doc_id": "1", "name": "Hotel", "rerank_score": 0.8}]
+
+        result = destination_research_node(state)
+
+    assert result["state_version"] == 4
+
+
+def test_research_confidence_score_set(sample_profile_version):
+    state = empty_state("session_1")
+    state["profile"] = sample_profile_version
+    state["messages"] = [HumanMessage(content="find restaurants")]
+
+    with patch("agents.destination_research.retrieve") as mock_retrieve, \
+         patch("agents.destination_research.rerank") as mock_rerank:
+        mock_retrieve.return_value = [{"doc_id": "1", "name": "Rest", "source_reliability": 0.9}]
+        mock_rerank.return_value = [{"doc_id": "1", "name": "Rest", "rerank_score": 0.9, "source_reliability": 0.9}]
+
+        result = destination_research_node(state)
+
+    req_id = list(result["rag_context"].keys())[0]
+    doc = result["rag_context"][req_id][0]
+    assert "confidence_score" in doc
+    assert 0.0 < doc["confidence_score"] <= 1.0
