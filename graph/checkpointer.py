@@ -19,6 +19,8 @@ _ALLOWED_MSGPACK_MODULES = [
     ("models.profile", "DisruptionTolerance"),
     ("models.profile", "ProfileVersion"),
     ("models.profile", "ConstraintProfile"),
+    ("models.itinerary", "Stop"),
+    ("models.itinerary", "StopType"),
     ("models.itinerary", "ItineraryVersion"),
     ("models.budget", "BudgetLedger"),
 ]

@@ -11,6 +11,8 @@ def route(state: dict) -> str:
         return "replanning"
     if state.get("profile") is None:
         return "constraint_profiler"
+    if state.get("itinerary") is None and state.get("rag_context"):
+        return "itinerary_builder"
     if state.get("itinerary") is None:
         return "destination_research"
     return "orchestrator_reply"
@@ -30,16 +32,20 @@ def build_graph():
     from agents.constraint_profiler import constraint_profiler_node
     builder.add_node("constraint_profiler", constraint_profiler_node)
 
-    # Stub nodes
+    from agents.destination_research import destination_research_node
+    from agents.itinerary_builder import itinerary_builder_node
+    
+    builder.add_node("destination_research", destination_research_node)
+    builder.add_node("itinerary_builder", itinerary_builder_node)
     builder.add_node("replanning", _stub_node("replanning"))
-    builder.add_node("destination_research", _stub_node("destination_research"))
     builder.add_node("orchestrator_reply", _stub_node("orchestrator_reply"))
 
     builder.set_conditional_entry_point(route)
 
     builder.add_edge("constraint_profiler", END)
     builder.add_edge("replanning", END)
-    builder.add_edge("destination_research", END)
+    builder.add_edge("destination_research", "itinerary_builder")
+    builder.add_edge("itinerary_builder", END)
     builder.add_edge("orchestrator_reply", END)
 
     return builder.compile(checkpointer=get_checkpointer())

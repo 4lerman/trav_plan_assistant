@@ -1,0 +1,104 @@
+from rag.corpus.schema import DestinationDoc, AccessibilityInfo
+
+SAMPLE_DOCS = [
+    DestinationDoc(
+        doc_id="doc_001",
+        name="Le Paradis Halal",
+        city="Paris",
+        country="France",
+        category="restaurant",
+        description="A beautiful fine-dining restaurant offering authentic French cuisine with 100% halal certified meat. No alcohol is served on the premises. Features a spacious dining room and excellent views of the Eiffel Tower.",
+        dietary_tags=["halal"],
+        accessibility=AccessibilityInfo(
+            wheelchair_accessible=True,
+            step_free_routes=True,
+            accessible_restrooms=True,
+            notes="Elevator available to main dining room."
+        ),
+        avg_cost_per_person=60.0,
+        currency="EUR",
+        source="corpus",
+        source_reliability=0.9,
+        last_verified="2026-04-20T10:00:00Z"
+    ),
+    DestinationDoc(
+        doc_id="doc_002",
+        name="Accessible Seine Cruise",
+        city="Paris",
+        country="France",
+        category="attraction",
+        description="A one-hour boat cruise along the River Seine. The entire boat is flat and completely wheelchair accessible. Audio guides are available in 14 languages.",
+        dietary_tags=[],
+        accessibility=AccessibilityInfo(
+            wheelchair_accessible=True,
+            step_free_routes=True,
+            accessible_restrooms=True,
+            notes="Ramp access from the pier."
+        ),
+        avg_cost_per_person=25.0,
+        currency="EUR",
+        source="corpus",
+        source_reliability=0.95,
+        last_verified="2026-04-21T09:00:00Z"
+    ),
+    DestinationDoc(
+        doc_id="doc_003",
+        name="Historic Bosphorus Hotel",
+        city="Istanbul",
+        country="Turkey",
+        category="hotel",
+        description="Luxury hotel situated directly on the Bosphorus. Offers a completely halal breakfast buffet and has a prayer room on site. Ground floor rooms are modified for wheelchair users.",
+        dietary_tags=["halal"],
+        accessibility=AccessibilityInfo(
+            wheelchair_accessible=True,
+            step_free_routes=True,
+            accessible_restrooms=True,
+            notes="Roll-in showers in ground floor rooms."
+        ),
+        avg_cost_per_person=150.0,
+        currency="EUR",
+        source="corpus",
+        source_reliability=0.85,
+        last_verified="2026-04-22T11:00:00Z"
+    ),
+    DestinationDoc(
+        doc_id="doc_004",
+        name="Old City Kebab House",
+        city="Istanbul",
+        country="Turkey",
+        category="restaurant",
+        description="Traditional Turkish kebabs right in the Sultanahmet district. Very popular but located in a historic building with steep stairs.",
+        dietary_tags=["halal"],
+        accessibility=AccessibilityInfo(
+            wheelchair_accessible=False,
+            step_free_routes=False,
+            accessible_restrooms=False,
+            notes="Historic building, no elevator, 3 steps at entrance."
+        ),
+        avg_cost_per_person=15.0,
+        currency="EUR",
+        source="corpus",
+        source_reliability=0.9,
+        last_verified="2026-04-23T14:00:00Z"
+    ),
+    DestinationDoc(
+        doc_id="doc_005",
+        name="Louvre Museum",
+        city="Paris",
+        country="France",
+        category="attraction",
+        description="The world's largest art museum and a historic monument in Paris. Highly accessible with elevators, ramps, and dedicated pathways for wheelchair users.",
+        dietary_tags=[],
+        accessibility=AccessibilityInfo(
+            wheelchair_accessible=True,
+            step_free_routes=True,
+            accessible_restrooms=True,
+            notes="Wheelchairs available for loan at the information desk."
+        ),
+        avg_cost_per_person=22.0,
+        currency="EUR",
+        source="corpus",
+        source_reliability=1.0,
+        last_verified="2026-04-25T16:00:00Z"
+    )
+]

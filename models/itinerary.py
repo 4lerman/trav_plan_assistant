@@ -19,7 +19,10 @@ class Stop(BaseModel):
     name: str
     constraint_flags: dict = {}
     budget_estimate: Decimal = Decimal("0.00")
-
+    depends_on: list[str] = []
+    fallback_alternatives: list["Stop"] = []
+    doc_id: Optional[str] = None
+    confidence_score: float = 0.0
 
 class ItineraryVersion(BaseModel):
     version_id: int
@@ -27,3 +30,5 @@ class ItineraryVersion(BaseModel):
     stops: list[Stop] = []
     validation_report: dict = {}
     profile_version_id: Optional[int] = None
+    dag_edges: list[tuple[str, str]] = []
+    days: int = 0
