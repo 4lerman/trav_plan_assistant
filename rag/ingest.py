@@ -36,7 +36,7 @@ def main():
     from FlagEmbedding import BGEM3FlagModel
 
     # Initialize Qdrant Client
-    client = QdrantClient(url="http://localhost:6333")
+    client = QdrantClient(url="http://localhost:6333", check_compatibility=False)
 
     collection_name = "destinations"
 

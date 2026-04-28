@@ -24,9 +24,11 @@ def main():
     print("Adaptive Travel Companion")
     print("Type your message and press Enter. Ctrl+C to exit.\n")
 
-    # Seed initial state into checkpointer
-    initial = empty_state(SESSION_ID)
-    graph.update_state(CONFIG, initial)
+    # Seed initial state into checkpointer only if empty
+    current_state = graph.get_state(CONFIG)
+    if not current_state.values:
+        initial = empty_state(SESSION_ID)
+        graph.update_state(CONFIG, initial)
 
     while True:
         try:

@@ -39,6 +39,7 @@ class TestConstraintProfilerHappyPath:
         ]
 
         result = run_profiler_turn(state)
+        print("LLM RESPONSE 1:", result.get("messages", [])[-1].content)
 
         assert result.get("profile") is not None
         profile_version = result["profile"]

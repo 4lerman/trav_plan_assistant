@@ -11,7 +11,7 @@ class NoFeasibleResultsError(Exception):
         self.query = query
         super().__init__(f"No feasible results found for query '{query}' matching the constraints.")
 
-_client = QdrantClient("http://localhost:6333")
+_client = QdrantClient("http://localhost:6333", check_compatibility=False)
 _embed_model = BGEM3FlagModel("BAAI/bge-m3", use_fp16=True)
 
 def _rrf(rank: int, k: int = 60) -> float:
@@ -32,9 +32,9 @@ def retrieve(query: str, profile: ConstraintProfile, request_id: str, top_k: int
     
     dense_vec = _embed_model.encode([query], return_dense=True)["dense_vecs"][0]
     
-    dense_hits = _client.search(
+    dense_hits = _client.query_points(
         collection_name="destinations",
-        query_vector=dense_vec.tolist(),
+        query=dense_vec.tolist(),
         query_filter=qdrant_filter,
         limit=top_k,
     )
@@ -58,7 +58,7 @@ def retrieve(query: str, profile: ConstraintProfile, request_id: str, top_k: int
     rrf_scores = {}
     docs_by_id = {}
     
-    for rank, hit in enumerate(dense_hits):
+    for rank, hit in enumerate(dense_hits.points):
         doc_id = hit.payload["doc_id"]
         rrf_scores[doc_id] = _rrf(rank + 1)
         docs_by_id[doc_id] = hit.payload
