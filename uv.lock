@@ -3150,6 +3150,7 @@ source = { editable = "." }
 dependencies = [
     { name = "anthropic" },
     { name = "flagembedding" },
+    { name = "httpx" },
     { name = "langchain-core" },
     { name = "langchain-qdrant" },
     { name = "langgraph" },
@@ -3179,6 +3180,7 @@ dev = [
 requires-dist = [
     { name = "anthropic", specifier = ">=0.40" },
     { name = "flagembedding", specifier = ">=1.4.0" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "hypothesis", marker = "extra == 'dev'", specifier = ">=6.0" },
     { name = "langchain-core", specifier = ">=0.3" },
     { name = "langchain-qdrant", specifier = ">=1.1.0" },
