@@ -14,16 +14,16 @@ def _event(provider: str, status_code: str) -> NormalisedEvent:
     )
 
 
-def test_duffel_cancelled_is_critical():
-    assert evaluate(_event("duffel", "cancelled")) == DisruptionSeverity.CRITICAL
+def test_amadeus_cancelled_is_critical():
+    assert evaluate(_event("amadeus", "cancelled")) == DisruptionSeverity.CRITICAL
 
 
-def test_duffel_delayed_major_is_critical():
-    assert evaluate(_event("duffel", "delayed_major")) == DisruptionSeverity.CRITICAL
+def test_amadeus_delayed_major_is_critical():
+    assert evaluate(_event("amadeus", "delayed_major")) == DisruptionSeverity.CRITICAL
 
 
-def test_duffel_delayed_minor_is_warning():
-    assert evaluate(_event("duffel", "delayed_minor")) == DisruptionSeverity.WARNING
+def test_amadeus_delayed_minor_is_warning():
+    assert evaluate(_event("amadeus", "delayed_minor")) == DisruptionSeverity.WARNING
 
 
 def test_wheelmap_inaccessible_is_critical():
@@ -39,4 +39,4 @@ def test_wheelmap_accessible_is_none():
 
 
 def test_unknown_status_is_none():
-    assert evaluate(_event("duffel", "unknown_status")) is None
+    assert evaluate(_event("amadeus", "unknown_status")) is None

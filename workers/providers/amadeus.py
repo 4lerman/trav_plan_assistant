@@ -10,19 +10,18 @@ from models.profile import ConstraintProfile
 
 log = logging.getLogger(__name__)
 
-_BASE_URL = "https://api.duffel.com"
+_BASE_URL = "https://test.api.amadeus.com/v2"
 
 
 def poll(entity_ids: list[str], profile: ConstraintProfile) -> list[NormalisedEvent]:
-    api_key = os.getenv("DUFFEL_API_KEY")
+    api_key = os.getenv("AMADEUS_API_KEY")
     if not api_key:
-        log.warning("DUFFEL_API_KEY not set — skipping Duffel poll")
+        log.warning("AMADEUS_API_KEY not set — skipping Amadeus poll")
         return []
 
     events: list[NormalisedEvent] = []
     headers = {
         "Authorization": f"Bearer {api_key}",
-        "Duffel-Version": "v2",
         "Accept": "application/json",
     }
     window = date.today().isoformat()
@@ -30,9 +29,9 @@ def poll(entity_ids: list[str], profile: ConstraintProfile) -> list[NormalisedEv
     for segment_id in entity_ids:
         try:
             resp = httpx.get(
-                f"{_BASE_URL}/air/order_changes",
+                f"{_BASE_URL}/schedule/flights",
                 headers=headers,
-                params={"order_id": segment_id},
+                params={"carrierCode": segment_id[:2], "flightNumber": segment_id[2:]},
                 timeout=10.0,
             )
             resp.raise_for_status()
@@ -40,14 +39,14 @@ def poll(entity_ids: list[str], profile: ConstraintProfile) -> list[NormalisedEv
                 status_code = _map_status(item)
                 if status_code:
                     events.append(NormalisedEvent(
-                        provider="duffel",
-                        entity_id=item.get("id", segment_id),
+                        provider="amadeus",
+                        entity_id=segment_id, # Use segment_id as the entity_id
                         status_code=status_code,
                         window=window,
                         raw_payload=item,
                     ))
         except httpx.HTTPError as exc:
-            log.warning("Duffel poll failed for %s: %s", segment_id, exc)
+            log.warning("Amadeus poll failed for %s: %s", segment_id, exc)
 
     return events
 

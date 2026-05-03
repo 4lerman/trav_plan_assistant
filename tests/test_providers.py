@@ -20,11 +20,11 @@ def _profile() -> ConstraintProfile:
     )
 
 
-# --- Duffel tests ---
+# --- Amadeus tests ---
 
-class TestDuffelPoll:
+class TestAmadeusPoll:
     def test_cancelled_flight_returns_normalised_event(self):
-        from workers.providers.duffel import poll
+        from workers.providers.amadeus import poll
 
         mock_response = MagicMock()
         mock_response.status_code = 200
@@ -32,37 +32,37 @@ class TestDuffelPoll:
             "data": [{"id": "seg_001", "status": "cancelled"}]
         }
 
-        with patch("workers.providers.duffel.httpx.get", return_value=mock_response):
-            with patch.dict("os.environ", {"DUFFEL_API_KEY": "test_key"}):
+        with patch("workers.providers.amadeus.httpx.get", return_value=mock_response):
+            with patch.dict("os.environ", {"AMADEUS_API_KEY": "test_key"}):
                 events = poll(["seg_001"], _profile())
 
         assert len(events) == 1
-        assert events[0].provider == "duffel"
+        assert events[0].provider == "amadeus"
         assert events[0].entity_id == "seg_001"
         assert events[0].status_code == "cancelled"
 
     def test_http_error_returns_empty_list(self):
-        from workers.providers.duffel import poll
+        from workers.providers.amadeus import poll
         import httpx
 
-        with patch("workers.providers.duffel.httpx.get", side_effect=httpx.HTTPError("timeout")):
-            with patch.dict("os.environ", {"DUFFEL_API_KEY": "test_key"}):
+        with patch("workers.providers.amadeus.httpx.get", side_effect=httpx.HTTPError("timeout")):
+            with patch.dict("os.environ", {"AMADEUS_API_KEY": "test_key"}):
                 events = poll(["seg_001"], _profile())
 
         assert events == []
 
     def test_missing_api_key_returns_empty_list(self):
-        from workers.providers.duffel import poll
+        from workers.providers.amadeus import poll
         import os
 
-        env = {k: v for k, v in os.environ.items() if k != "DUFFEL_API_KEY"}
+        env = {k: v for k, v in os.environ.items() if k != "AMADEUS_API_KEY"}
         with patch.dict("os.environ", env, clear=True):
             events = poll(["seg_001"], _profile())
 
         assert events == []
 
     def test_large_delay_maps_to_delayed_major(self):
-        from workers.providers.duffel import poll
+        from workers.providers.amadeus import poll
 
         mock_response = MagicMock()
         mock_response.status_code = 200
@@ -70,15 +70,15 @@ class TestDuffelPoll:
             "data": [{"id": "seg_002", "status": "changed", "delay_minutes": 150}]
         }
 
-        with patch("workers.providers.duffel.httpx.get", return_value=mock_response):
-            with patch.dict("os.environ", {"DUFFEL_API_KEY": "test_key"}):
+        with patch("workers.providers.amadeus.httpx.get", return_value=mock_response):
+            with patch.dict("os.environ", {"AMADEUS_API_KEY": "test_key"}):
                 events = poll(["seg_002"], _profile())
 
         assert len(events) == 1
         assert events[0].status_code == "delayed_major"
 
     def test_small_delay_maps_to_delayed_minor(self):
-        from workers.providers.duffel import poll
+        from workers.providers.amadeus import poll
 
         mock_response = MagicMock()
         mock_response.status_code = 200
@@ -86,8 +86,8 @@ class TestDuffelPoll:
             "data": [{"id": "seg_003", "status": "changed", "delay_minutes": 45}]
         }
 
-        with patch("workers.providers.duffel.httpx.get", return_value=mock_response):
-            with patch.dict("os.environ", {"DUFFEL_API_KEY": "test_key"}):
+        with patch("workers.providers.amadeus.httpx.get", return_value=mock_response):
+            with patch.dict("os.environ", {"AMADEUS_API_KEY": "test_key"}):
                 events = poll(["seg_003"], _profile())
 
         assert len(events) == 1

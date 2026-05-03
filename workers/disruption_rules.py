@@ -4,7 +4,7 @@ from models.disruption import DisruptionSeverity, NormalisedEvent
 # Rule table — replace this function body with LLM classifier when upgrading.
 # Public signature must stay identical: (NormalisedEvent) -> DisruptionSeverity | None
 def evaluate(event: NormalisedEvent) -> DisruptionSeverity | None:
-    if event.provider == "duffel":
+    if event.provider == "amadeus":
         if event.status_code == "cancelled":
             return DisruptionSeverity.CRITICAL
         if event.status_code == "delayed_major":

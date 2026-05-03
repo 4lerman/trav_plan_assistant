@@ -37,9 +37,9 @@ def test_critical_event_is_enqueued_and_wake_signal_written(tmp_path):
     fake_profile = MagicMock()
 
     with patch("workers.live_data_worker.WAKE_SIGNAL_PATH", str(wake_file)), \
-         patch("workers.live_data_worker._load_entity_ids_from_checkpoint", return_value={"duffel": ["seg_1"], "wheelmap": []}), \
+         patch("workers.live_data_worker._load_entity_ids_from_checkpoint", return_value={"amadeus": ["seg_1"], "wheelmap": []}), \
          patch("workers.live_data_worker._load_profile_from_checkpoint", return_value=fake_profile), \
-         patch("workers.providers.duffel.poll", return_value=[_make_normalised("duffel", "cancelled")]), \
+         patch("workers.providers.amadeus.poll", return_value=[_make_normalised("amadeus", "cancelled")]), \
          patch("workers.providers.wheelmap.poll", return_value=[]):
 
         from workers.live_data_worker import _run_once
@@ -48,7 +48,7 @@ def test_critical_event_is_enqueued_and_wake_signal_written(tmp_path):
     from workers.queue import dequeue_pending
     events = dequeue_pending()
     assert len(events) == 1
-    assert events[0].provider == "duffel"
+    assert events[0].provider == "amadeus"
     assert events[0].status_code == "cancelled"
     assert events[0].severity == DisruptionSeverity.CRITICAL
     assert wake_file.exists()
@@ -59,9 +59,9 @@ def test_none_severity_event_is_not_enqueued(tmp_path):
     fake_profile = MagicMock()
 
     with patch("workers.live_data_worker.WAKE_SIGNAL_PATH", str(wake_file)), \
-         patch("workers.live_data_worker._load_entity_ids_from_checkpoint", return_value={"duffel": [], "wheelmap": ["node_1"]}), \
+         patch("workers.live_data_worker._load_entity_ids_from_checkpoint", return_value={"amadeus": [], "wheelmap": ["node_1"]}), \
          patch("workers.live_data_worker._load_profile_from_checkpoint", return_value=fake_profile), \
-         patch("workers.providers.duffel.poll", return_value=[]), \
+         patch("workers.providers.amadeus.poll", return_value=[]), \
          patch("workers.providers.wheelmap.poll", return_value=[_make_normalised("wheelmap", "accessible")]):
 
         from workers.live_data_worker import _run_once
@@ -77,9 +77,9 @@ def test_provider_exception_does_not_crash_worker(tmp_path):
     fake_profile = MagicMock()
 
     with patch("workers.live_data_worker.WAKE_SIGNAL_PATH", str(wake_file)), \
-         patch("workers.live_data_worker._load_entity_ids_from_checkpoint", return_value={"duffel": ["seg_1"], "wheelmap": []}), \
+         patch("workers.live_data_worker._load_entity_ids_from_checkpoint", return_value={"amadeus": ["seg_1"], "wheelmap": []}), \
          patch("workers.live_data_worker._load_profile_from_checkpoint", return_value=fake_profile), \
-         patch("workers.providers.duffel.poll", side_effect=Exception("network down")), \
+         patch("workers.providers.amadeus.poll", side_effect=Exception("network down")), \
          patch("workers.providers.wheelmap.poll", return_value=[]):
 
         from workers.live_data_worker import _run_once
