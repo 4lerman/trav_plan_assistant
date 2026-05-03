@@ -132,3 +132,20 @@ class TestBudgetLedger:
             bookings=[],
         )
         assert ledger.remaining_for(date(2026, 5, 1)) == Decimal("80.00")
+
+
+class TestNormalisedEvent:
+    def test_constructs_with_required_fields(self):
+        from models.disruption import NormalisedEvent
+        event = NormalisedEvent(
+            provider="duffel",
+            entity_id="seg_123",
+            status_code="cancelled",
+            window="2026-05-10",
+            raw_payload={"foo": "bar"},
+        )
+        assert event.provider == "duffel"
+        assert event.entity_id == "seg_123"
+        assert event.status_code == "cancelled"
+        assert event.window == "2026-05-10"
+        assert event.raw_payload == {"foo": "bar"}
