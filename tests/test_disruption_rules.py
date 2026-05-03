@@ -12,14 +12,14 @@ def _event(provider: str, status_code: str) -> NormalisedEvent:
         raw_payload={},
     )
 
-def test_amadeus_cancelled_is_critical():
-    assert evaluate(_event("amadeus", "cancelled")) == DisruptionSeverity.CRITICAL
+def test_aviationstack_cancelled_is_critical():
+    assert evaluate(_event("aviationstack", "cancelled")) == DisruptionSeverity.CRITICAL
 
-def test_amadeus_delayed_major_is_critical():
-    assert evaluate(_event("amadeus", "delayed_major")) == DisruptionSeverity.CRITICAL
+def test_aviationstack_delayed_major_is_critical():
+    assert evaluate(_event("aviationstack", "delayed_major")) == DisruptionSeverity.CRITICAL
 
-def test_amadeus_delayed_minor_is_warning():
-    assert evaluate(_event("amadeus", "delayed_minor")) == DisruptionSeverity.WARNING
+def test_aviationstack_delayed_minor_is_warning():
+    assert evaluate(_event("aviationstack", "delayed_minor")) == DisruptionSeverity.WARNING
 
 def test_weather_extreme_is_critical():
     assert evaluate(_event("weather", "extreme_weather")) == DisruptionSeverity.CRITICAL
@@ -34,4 +34,4 @@ def test_advisories_medium_risk_is_warning():
     assert evaluate(_event("advisories", "medium_risk")) == DisruptionSeverity.WARNING
 
 def test_unknown_status_is_none():
-    assert evaluate(_event("amadeus", "unknown_status")) is None
+    assert evaluate(_event("aviationstack", "unknown_status")) is None

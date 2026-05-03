@@ -10,28 +10,25 @@ from models.profile import ConstraintProfile
 
 log = logging.getLogger(__name__)
 
-_BASE_URL = "https://test.api.amadeus.com/v2"
-
+_BASE_URL = "http://api.aviationstack.com/v1/flights"
 
 def poll(entity_ids: list[str], profile: ConstraintProfile) -> list[NormalisedEvent]:
-    api_key = os.getenv("AMADEUS_API_KEY")
+    api_key = os.getenv("AVIATIONSTACK_API_KEY")
     if not api_key:
-        log.warning("AMADEUS_API_KEY not set — skipping Amadeus poll")
+        log.warning("AVIATIONSTACK_API_KEY not set — skipping Aviationstack poll")
         return []
 
     events: list[NormalisedEvent] = []
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Accept": "application/json",
-    }
     window = date.today().isoformat()
 
     for segment_id in entity_ids:
         try:
             resp = httpx.get(
-                f"{_BASE_URL}/schedule/flights",
-                headers=headers,
-                params={"carrierCode": segment_id[:2], "flightNumber": segment_id[2:]},
+                _BASE_URL,
+                params={
+                    "access_key": api_key,
+                    "flight_iata": segment_id
+                },
                 timeout=10.0,
             )
             resp.raise_for_status()
@@ -39,23 +36,24 @@ def poll(entity_ids: list[str], profile: ConstraintProfile) -> list[NormalisedEv
                 status_code = _map_status(item)
                 if status_code:
                     events.append(NormalisedEvent(
-                        provider="amadeus",
-                        entity_id=segment_id, # Use segment_id as the entity_id
+                        provider="aviationstack",
+                        entity_id=segment_id,
                         status_code=status_code,
                         window=window,
                         raw_payload=item,
                     ))
         except httpx.HTTPError as exc:
-            log.warning("Amadeus poll failed for %s: %s", segment_id, exc)
+            log.warning("Aviationstack poll failed for %s: %s", segment_id, exc)
 
     return events
 
-
 def _map_status(item: dict) -> str | None:
-    status = item.get("status", "")
-    if status == "cancelled":
+    flight_status = item.get("flight_status", "")
+    if flight_status == "cancelled":
         return "cancelled"
-    delay = item.get("delay_minutes", 0) or 0
+    
+    departure = item.get("departure", {})
+    delay = departure.get("delay") or 0
     if delay >= 120:
         return "delayed_major"
     if delay > 0:

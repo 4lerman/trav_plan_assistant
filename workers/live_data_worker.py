@@ -10,7 +10,7 @@ from models.itinerary import ItineraryVersion
 from models.profile import ConstraintProfile, ProfileVersion
 from workers import queue
 from workers.disruption_rules import evaluate
-from workers.providers import amadeus, weather, advisories
+from workers.providers import aviationstack, weather, advisories
 
 log = logging.getLogger(__name__)
 
@@ -20,7 +20,7 @@ _CHECKPOINT_DB = ".checkpoints.db"
 
 def _load_entity_ids_from_checkpoint() -> dict[str, list[str]]:
     """Read itinerary stop IDs from the LangGraph SQLite checkpoint (read-only)."""
-    result: dict[str, list[str]] = {"amadeus": [], "weather": [], "advisories": []}
+    result: dict[str, list[str]] = {"aviationstack": [], "weather": [], "advisories": []}
     try:
         conn = sqlite3.connect(f"file:{_CHECKPOINT_DB}?mode=ro", uri=True)
         rows = conn.execute(
@@ -35,7 +35,7 @@ def _load_entity_ids_from_checkpoint() -> dict[str, list[str]]:
                     itinerary = ItineraryVersion.model_validate(itinerary_data)
                     for stop in itinerary.stops:
                         if stop.type.value == "transit" and stop.doc_id:
-                            result["amadeus"].append(stop.doc_id)
+                            result["aviationstack"].append(stop.doc_id)
                         elif stop.type.value == "destination":
                             result["weather"].append(stop.name)
                             result["advisories"].append(stop.name)
@@ -78,7 +78,7 @@ def _run_once() -> None:
     profile = _load_profile_from_checkpoint()
 
     providers = [
-        (amadeus.poll, entity_ids["amadeus"]),
+        (aviationstack.poll, entity_ids["aviationstack"]),
         (weather.poll, entity_ids["weather"]),
         (advisories.poll, entity_ids["advisories"]),
     ]

@@ -16,13 +16,13 @@ def _profile() -> ConstraintProfile:
         language="en",
     )
 
-class TestAmadeusPoll:
+class TestAviationstackPoll:
     def test_cancelled_flight(self):
-        from workers.providers.amadeus import poll
+        from workers.providers.aviationstack import poll
         mock_response = MagicMock()
-        mock_response.json.return_value = {"data": [{"status": "cancelled"}]}
-        with patch("workers.providers.amadeus.httpx.get", return_value=mock_response):
-            with patch.dict("os.environ", {"AMADEUS_API_KEY": "test_key"}):
+        mock_response.json.return_value = {"data": [{"flight_status": "cancelled"}]}
+        with patch("workers.providers.aviationstack.httpx.get", return_value=mock_response):
+            with patch.dict("os.environ", {"AVIATIONSTACK_API_KEY": "test_key"}):
                 events = poll(["AA123"], _profile())
         assert len(events) == 1
         assert events[0].status_code == "cancelled"

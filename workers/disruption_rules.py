@@ -2,7 +2,7 @@ from __future__ import annotations
 from models.disruption import DisruptionSeverity, NormalisedEvent
 
 def evaluate(event: NormalisedEvent) -> DisruptionSeverity | None:
-    if event.provider == "amadeus":
+    if event.provider == "aviationstack":
         if event.status_code == "cancelled":
             return DisruptionSeverity.CRITICAL
         if event.status_code == "delayed_major":
