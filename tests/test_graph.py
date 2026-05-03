@@ -64,13 +64,14 @@ class TestRouting:
         }
         assert route(state) == "constraint_profiler"
 
-    def test_routes_to_replanning_when_disruption_queued(self):
+    def test_disruption_queue_non_empty_routes_to_replanning(self):
         from graph.graph import route
         state = {
-            "profile": None,
-            "itinerary": None,
-            "active_disruption_id": None,
+            "profile": object(),
+            "itinerary": object(),
             "disruption_queue": [{"event_key": "abc"}],
+            "active_disruption_id": None,
+            "rag_context": {},
         }
         assert route(state) == "replanning"
 
