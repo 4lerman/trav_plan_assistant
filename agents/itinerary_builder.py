@@ -18,6 +18,7 @@ Instructions:
 - You must ONLY use the options provided in the research context.
 - Ensure the sequence of stops makes logical and geographical sense (e.g., meals between activities, realistic daily pacing).
 - Each stop must have a unique `id`, `type`, `name`, and optionally `doc_id` mapping back to the research context.
+- Valid `type` values are exactly: "meal", "activity", "lodging", "transit". Map "restaurant" → "meal", "attraction" → "activity", "hotel" → "lodging".
 - You must create a Directed Acyclic Graph (DAG) by defining `dag_edges` which represent chronological dependencies `["from_stop_id", "to_stop_id"]`.
 
 Steps (Approach this step-by-step):
@@ -105,10 +106,16 @@ def run_itinerary_builder(state: TripState) -> dict:
         edges = data.get("dag_edges", [])
         
         stops = []
+        _type_map = {
+            "restaurant": "meal", "attraction": "activity",
+            "hotel": "lodging", "transport": "transit",
+        }
         for s in parsed_stops:
+            raw_type = s["type"]
+            mapped_type = _type_map.get(raw_type, raw_type)
             stop = Stop(
                 id=s["id"],
-                type=StopType(s["type"]),
+                type=StopType(mapped_type),
                 name=s["name"],
                 doc_id=s.get("doc_id"),
                 depends_on=s.get("depends_on", [])

@@ -39,6 +39,8 @@ def main():
         if not user_input:
             continue
 
+        prev_itinerary = graph.get_state(CONFIG).values.get("itinerary")
+
         result = graph.invoke(
             {"messages": [HumanMessage(content=user_input)]},
             config=CONFIG,
@@ -49,9 +51,9 @@ def main():
             last = messages[-1]
             print(f"\nAssistant: {last.content}\n")
 
-        # Display itinerary if generated
+        # Only display itinerary when it was just built this turn
         itinerary = result.get("itinerary")
-        if itinerary:
+        if itinerary and itinerary != prev_itinerary:
             print("-" * 20)
             print(f"--- {itinerary.days}-DAY ITINERARY ---")
             for stop in itinerary.stops:

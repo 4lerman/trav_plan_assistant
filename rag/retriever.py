@@ -1,5 +1,5 @@
 from qdrant_client import QdrantClient
-from qdrant_client.models import FieldCondition, MatchValue, MatchAny, Range, Filter
+from qdrant_client.models import FieldCondition, MatchValue, MatchAny, Range, Filter, IsEmptyCondition, PayloadField
 from FlagEmbedding import BGEM3FlagModel
 from rank_bm25 import BM25Okapi
 
@@ -22,13 +22,17 @@ def retrieve(query: str, profile: ConstraintProfile, request_id: str, top_k: int
     if profile.mobility_level == MobilityLevel.FULL:
         must.append(FieldCondition(key="accessibility.wheelchair_accessible", match=MatchValue(value=True)))
         must.append(FieldCondition(key="accessibility.step_free_routes", match=MatchValue(value=True)))
-    
+
+    # Dietary filter: docs that match the required tags OR have no dietary tags at all
+    # (attractions/hotels with empty tag arrays are never excluded).
+    should = []
     if profile.dietary_tags:
-        must.append(FieldCondition(key="dietary_tags", match=MatchAny(any=profile.dietary_tags)))
-        
+        should.append(FieldCondition(key="dietary_tags", match=MatchAny(any=profile.dietary_tags)))
+        should.append(IsEmptyCondition(is_empty=PayloadField(key="dietary_tags")))
+
     must.append(FieldCondition(key="avg_cost_per_person", range=Range(lte=float(profile.daily_budget))))
     
-    qdrant_filter = Filter(must=must)
+    qdrant_filter = Filter(must=must, should=should if should else None)
     
     dense_vec = _embed_model.encode([query], return_dense=True)["dense_vecs"][0]
     
