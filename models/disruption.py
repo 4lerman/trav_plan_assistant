@@ -27,7 +27,7 @@ def make_event_key(*, provider: str, entity_id: str, status_code: str, window: s
 
 
 class NormalisedEvent(BaseModel):
-    provider: str       # "aviationstack" | "weather" | "advisories" | "transit"
+    provider: str       # "aviationstack" | "weather" | "transit"
     entity_id: str      # flight segment ID or Wheelmap node ID
     status_code: str    # provider-specific normalised status string
     window: str         # ISO date string — used for event_key dedup

@@ -27,12 +27,6 @@ def test_weather_extreme_is_critical():
 def test_weather_severe_is_warning():
     assert evaluate(_event("weather", "severe_weather")) == DisruptionSeverity.WARNING
 
-def test_advisories_high_risk_is_critical():
-    assert evaluate(_event("advisories", "high_risk")) == DisruptionSeverity.CRITICAL
-
-def test_advisories_medium_risk_is_warning():
-    assert evaluate(_event("advisories", "medium_risk")) == DisruptionSeverity.WARNING
-
 def test_unknown_status_is_none():
     assert evaluate(_event("aviationstack", "unknown_status")) is None
 

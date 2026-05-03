@@ -38,17 +38,6 @@ class TestWeatherPoll:
         assert len(events) == 1
         assert events[0].status_code == "extreme_weather"
 
-class TestAdvisoriesPoll:
-    def test_high_risk(self):
-        from workers.providers.advisories import poll
-        mock_response = MagicMock()
-        mock_response.json.return_value = {"data": [{"safetyScores": {"overall": 80}}]}
-        with patch("workers.providers.advisories.httpx.get", return_value=mock_response):
-            with patch.dict("os.environ", {"ADVISORY_API_KEY": "test"}):
-                events = poll(["London"], _profile())
-        assert len(events) == 1
-        assert events[0].status_code == "high_risk"
-
 class TestTransitPoll:
     def test_service_suspended(self):
         from workers.providers.transit import poll

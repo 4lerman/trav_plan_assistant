@@ -14,11 +14,6 @@ def evaluate(event: NormalisedEvent) -> DisruptionSeverity | None:
             return DisruptionSeverity.CRITICAL
         if event.status_code == "severe_weather":
             return DisruptionSeverity.WARNING
-    elif event.provider == "advisories":
-        if event.status_code == "high_risk":
-            return DisruptionSeverity.CRITICAL
-        if event.status_code == "medium_risk":
-            return DisruptionSeverity.WARNING
     elif event.provider == "transit":
         if event.status_code == "service_suspended":
             return DisruptionSeverity.CRITICAL
