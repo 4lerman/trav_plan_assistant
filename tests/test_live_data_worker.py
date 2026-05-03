@@ -27,11 +27,12 @@ def in_memory_queue():
 def test_critical_event_is_enqueued_and_wake_signal_written(tmp_path):
     wake_file = tmp_path / ".wake_signal"
     with patch("workers.live_data_worker.WAKE_SIGNAL_PATH", str(wake_file)), \
-         patch("workers.live_data_worker._load_entity_ids_from_checkpoint", return_value={"aviationstack": ["seg_1"], "weather": [], "advisories": []}), \
+         patch("workers.live_data_worker._load_entity_ids_from_checkpoint", return_value={"aviationstack": ["seg_1"], "weather": [], "advisories": [], "transit": []}), \
          patch("workers.live_data_worker._load_profile_from_checkpoint", return_value=MagicMock()), \
          patch("workers.providers.aviationstack.poll", return_value=[_make_normalised("aviationstack", "cancelled")]), \
          patch("workers.providers.weather.poll", return_value=[]), \
-         patch("workers.providers.advisories.poll", return_value=[]):
+         patch("workers.providers.advisories.poll", return_value=[]), \
+         patch("workers.providers.transit.poll", return_value=[]):
         from workers.live_data_worker import _run_once
         _run_once()
     from workers.queue import dequeue_pending
@@ -43,11 +44,12 @@ def test_critical_event_is_enqueued_and_wake_signal_written(tmp_path):
 def test_none_severity_event_is_not_enqueued(tmp_path):
     wake_file = tmp_path / ".wake_signal"
     with patch("workers.live_data_worker.WAKE_SIGNAL_PATH", str(wake_file)), \
-         patch("workers.live_data_worker._load_entity_ids_from_checkpoint", return_value={"aviationstack": [], "weather": ["London"], "advisories": []}), \
+         patch("workers.live_data_worker._load_entity_ids_from_checkpoint", return_value={"aviationstack": [], "weather": ["London"], "advisories": [], "transit": []}), \
          patch("workers.live_data_worker._load_profile_from_checkpoint", return_value=MagicMock()), \
          patch("workers.providers.aviationstack.poll", return_value=[]), \
          patch("workers.providers.weather.poll", return_value=[_make_normalised("weather", "nice_weather")]), \
-         patch("workers.providers.advisories.poll", return_value=[]):
+         patch("workers.providers.advisories.poll", return_value=[]), \
+         patch("workers.providers.transit.poll", return_value=[]):
         from workers.live_data_worker import _run_once
         _run_once()
     from workers.queue import dequeue_pending
@@ -56,10 +58,11 @@ def test_none_severity_event_is_not_enqueued(tmp_path):
 def test_provider_exception_does_not_crash_worker(tmp_path):
     wake_file = tmp_path / ".wake_signal"
     with patch("workers.live_data_worker.WAKE_SIGNAL_PATH", str(wake_file)), \
-         patch("workers.live_data_worker._load_entity_ids_from_checkpoint", return_value={"aviationstack": ["seg_1"], "weather": [], "advisories": []}), \
+         patch("workers.live_data_worker._load_entity_ids_from_checkpoint", return_value={"aviationstack": ["seg_1"], "weather": [], "advisories": [], "transit": []}), \
          patch("workers.live_data_worker._load_profile_from_checkpoint", return_value=MagicMock()), \
          patch("workers.providers.aviationstack.poll", side_effect=Exception("network down")), \
          patch("workers.providers.weather.poll", return_value=[]), \
-         patch("workers.providers.advisories.poll", return_value=[]):
+         patch("workers.providers.advisories.poll", return_value=[]), \
+         patch("workers.providers.transit.poll", return_value=[]):
         from workers.live_data_worker import _run_once
         _run_once()

@@ -19,4 +19,9 @@ def evaluate(event: NormalisedEvent) -> DisruptionSeverity | None:
             return DisruptionSeverity.CRITICAL
         if event.status_code == "medium_risk":
             return DisruptionSeverity.WARNING
+    elif event.provider == "transit":
+        if event.status_code == "service_suspended":
+            return DisruptionSeverity.CRITICAL
+        if event.status_code == "service_modified":
+            return DisruptionSeverity.WARNING
     return None

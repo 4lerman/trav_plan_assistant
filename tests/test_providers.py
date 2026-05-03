@@ -44,7 +44,18 @@ class TestAdvisoriesPoll:
         mock_response = MagicMock()
         mock_response.json.return_value = {"data": [{"safetyScores": {"overall": 80}}]}
         with patch("workers.providers.advisories.httpx.get", return_value=mock_response):
-            with patch.dict("os.environ", {"AMADEUS_API_KEY": "test"}):
+            with patch.dict("os.environ", {"ADVISORY_API_KEY": "test"}):
                 events = poll(["London"], _profile())
         assert len(events) == 1
         assert events[0].status_code == "high_risk"
+
+class TestTransitPoll:
+    def test_service_suspended(self):
+        from workers.providers.transit import poll
+        mock_response = MagicMock()
+        mock_response.json.return_value = {"alerts": [{"effect": "strike"}]}
+        with patch("workers.providers.transit.httpx.get", return_value=mock_response):
+            with patch.dict("os.environ", {"TRANSIT_API_KEY": "test"}):
+                events = poll(["route_1"], _profile())
+        assert len(events) == 1
+        assert events[0].status_code == "service_suspended"

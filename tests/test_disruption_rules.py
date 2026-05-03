@@ -35,3 +35,9 @@ def test_advisories_medium_risk_is_warning():
 
 def test_unknown_status_is_none():
     assert evaluate(_event("aviationstack", "unknown_status")) is None
+
+def test_transit_suspended_is_critical():
+    assert evaluate(_event("transit", "service_suspended")) == DisruptionSeverity.CRITICAL
+
+def test_transit_modified_is_warning():
+    assert evaluate(_event("transit", "service_modified")) == DisruptionSeverity.WARNING
