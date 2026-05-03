@@ -29,7 +29,7 @@ def _check_disruption_wake_signal() -> None:
     pending = queue.dequeue_pending()
     if not pending:
         return
-    graph.update_state(CONFIG, {"disruption_queue": [e.model_dump() for e in pending]})
+    graph.update_state(CONFIG, {"disruption_queue": [e.model_dump(mode="json") for e in pending]})
     result = graph.invoke(
         {"messages": [SystemMessage(content="A disruption has been detected on your itinerary.")]},
         config=CONFIG,
