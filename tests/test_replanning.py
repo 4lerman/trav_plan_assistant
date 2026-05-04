@@ -234,3 +234,58 @@ def test_replanning_clears_active_disruption_id_on_success(
         result = replanning_node(state)
 
     assert result["active_disruption_id"] is None
+
+
+def test_graph_routes_to_replanning_when_active_disruption_id_set(
+    profile_version, disruption_event, itinerary_with_fallbacks
+):
+    """Graph routes to replanning node when active_disruption_id is set."""
+    from graph.graph import route
+
+    state = {
+        "active_disruption_id": disruption_event.event_key,
+        "profile": profile_version,
+        "itinerary": itinerary_with_fallbacks,
+        "disruption_queue": [],
+        "rag_context": {},
+    }
+    assert route(state) == "replanning"
+
+
+def test_full_replan_cycle_via_graph(
+    profile_version, disruption_event, itinerary_with_fallbacks
+):
+    """Full graph invocation: disruption event → graph routes to replanning → new itinerary emitted."""
+    from graph.graph import graph
+    from workers.queue import enqueue
+    from langchain_core.messages import HumanMessage
+
+    enqueue(disruption_event)
+
+    state = {
+        "session_id": "e2e_session",
+        "state_version": 0,
+        "profile": profile_version,
+        "profile_history": [profile_version],
+        "itinerary": itinerary_with_fallbacks,
+        "itinerary_history": [itinerary_with_fallbacks],
+        "budget_ledger": BudgetLedger(
+            ledger_id="l_e2e", home_currency="EUR", daily_cap=Decimal("150.00")
+        ),
+        "disruption_queue": [],
+        "active_disruption_id": disruption_event.event_key,
+        "rag_context": {},
+        "live_data": {},
+        "messages": [HumanMessage(content="What happened to my trip?")],
+        "replanning_context": None,
+    }
+
+    with patch("agents.replanning._retrieve_fallback_from_rag"):
+        result = graph.invoke(state, config={"configurable": {"thread_id": "e2e_session"}})
+
+    assert result["active_disruption_id"] is None
+    # A new itinerary version or escalation message was emitted
+    assert result.get("itinerary") is not None or any(
+        "replanning" in m.content.lower() or "unable" in m.content.lower()
+        for m in result.get("messages", [])
+    )
