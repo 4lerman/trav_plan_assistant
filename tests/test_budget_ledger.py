@@ -37,3 +37,42 @@ def test_budget_ledger_schema():
     )
     assert ledger.entries == []
     assert ledger.fx_rates == {}
+
+
+from models.replanning import ReplanningContext, RelaxationStep, ReplanningResult
+from models.disruption import DisruptionEvent, DisruptionSeverity
+
+
+def test_replanning_context_schema():
+    event = DisruptionEvent(
+        event_key="abc123",
+        provider="aviationstack",
+        entity_id="FL123",
+        status_code="CANCELLED",
+        severity=DisruptionSeverity.CRITICAL,
+        detected_at=datetime(2026, 5, 5, 8, 0, 0),
+    )
+    ctx = ReplanningContext(
+        profile_version_id=1,
+        itinerary_version_id=2,
+        disruption_event=event,
+        affected_stop_ids=["stop_1"],
+        started_at=datetime(2026, 5, 5, 9, 0, 0),
+    )
+    assert ctx.profile_version_id == 1
+    assert len(ctx.affected_stop_ids) == 1
+
+
+def test_replanning_result_escalation_flag():
+    result = ReplanningResult(
+        result_id="r1",
+        proposed_itinerary_version_id=None,
+        utility_score=0.0,
+        relaxation_steps=[],
+        escalated=True,
+        escalation_reason="No feasible plan found after full ladder",
+        completed_at=datetime(2026, 5, 5, 9, 5, 0),
+    )
+    assert result.escalated is True
+    assert result.proposed_itinerary_version_id is None
+

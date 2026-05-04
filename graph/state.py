@@ -7,6 +7,7 @@ from graph.reducers import dedup_append, latest_by_timestamp, merge_by_key
 from models.profile import ProfileVersion
 from models.itinerary import ItineraryVersion
 from models.budget import BudgetLedger
+from models.replanning import ReplanningContext
 
 
 class TripState(TypedDict, total=False):
@@ -22,6 +23,7 @@ class TripState(TypedDict, total=False):
     rag_context: Annotated[dict[str, list], merge_by_key]
     live_data: Annotated[dict[str, dict], latest_by_timestamp]
     messages: Annotated[list[BaseMessage], add_messages]
+    replanning_context: Optional[ReplanningContext]
 
 
 def empty_state(session_id: str) -> TripState:
@@ -38,4 +40,5 @@ def empty_state(session_id: str) -> TripState:
         rag_context={},
         live_data={},
         messages=[],
+        replanning_context=None,
     )
