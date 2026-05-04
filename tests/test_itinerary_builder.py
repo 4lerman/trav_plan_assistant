@@ -54,8 +54,8 @@ def test_builder_stages_fallbacks(sample_profile_version):
         result = itinerary_builder_node(state)
 
         stop = result["itinerary"].stops[0]
-        assert len(stop.fallback_alternatives) == 2
-        assert stop.fallback_alternatives[0].doc_id == "doc_2"
+        assert len(stop.fallback_options) == 2
+        assert stop.fallback_options[0].venue_id == "doc_2"
 
 
 def test_builder_dag_edges_stored(sample_profile_version):

@@ -5,7 +5,7 @@ from datetime import datetime
 from anthropic import Anthropic
 from langchain_core.messages import AIMessage
 from graph.state import TripState
-from models.itinerary import ItineraryVersion, Stop, StopType
+from models.itinerary import ItineraryVersion, Stop, StopType, FallbackOption
 from decimal import Decimal
 
 _client = Anthropic()
@@ -125,16 +125,21 @@ def run_itinerary_builder(state: TripState) -> dict:
                 orig_doc = next((r for r in rag_results if r.get("doc_id") == stop.doc_id), None)
                 if orig_doc:
                     cat = orig_doc.get("category")
-                    alts = [r for r in rag_results if r.get("category") == cat and r.get("doc_id") != stop.doc_id][:3]
-                    for alt in alts:
-                        alt_stop = Stop(
-                            id=f"{stop.id}_alt_{alt.get('doc_id')}",
-                            type=stop.type,
-                            name=alt.get("name"),
-                            doc_id=alt.get("doc_id")
-                        )
-                        stop.fallback_alternatives.append(alt_stop)
-                        
+                    if cat in ["lodging", "transit", "meal"]:
+                        alts = [r for r in rag_results if r.get("category") == cat and r.get("doc_id") != stop.doc_id][:3]
+                        from datetime import timezone
+                        for alt in alts:
+                            fo = FallbackOption(
+                                venue_id=alt.get("doc_id"),
+                                name=alt.get("name", ""),
+                                stop_type=stop.type,
+                                rag_confidence=alt.get("rag_confidence", 0.0),
+                                estimated_cost=Decimal(str(alt.get("avg_cost_per_person", 0))),
+                                currency=alt.get("currency", "EUR"),
+                                constraint_flags=alt.get("constraint_flags", {}),
+                                staged_at=datetime.now(timezone.utc)
+                            )
+                            stop.fallback_options.append(fo)
             stops.append(stop)
             
         validation_report = _validate_itinerary(stops, profile, state.get("budget_ledger"))
