@@ -13,6 +13,17 @@ class StopType(str, Enum):
     MEAL = "meal"
 
 
+class FallbackOption(BaseModel):
+    venue_id: str
+    name: str
+    stop_type: StopType
+    rag_confidence: float
+    estimated_cost: Decimal
+    currency: str
+    constraint_flags: dict[str, bool] = {}  # constraint_name -> passes
+    staged_at: datetime
+
+
 class Stop(BaseModel):
     id: str
     type: StopType
@@ -21,6 +32,7 @@ class Stop(BaseModel):
     budget_estimate: Decimal = Decimal("0.00")
     depends_on: list[str] = []
     fallback_alternatives: list["Stop"] = []
+    fallback_options: list[FallbackOption] = []
     doc_id: Optional[str] = None
     confidence_score: float = 0.0
 

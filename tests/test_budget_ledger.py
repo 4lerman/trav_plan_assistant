@@ -76,3 +76,26 @@ def test_replanning_result_escalation_flag():
     assert result.escalated is True
     assert result.proposed_itinerary_version_id is None
 
+
+from models.itinerary import FallbackOption, Stop, StopType
+
+
+def test_fallback_option_schema():
+    fo = FallbackOption(
+        venue_id="v_alt_1",
+        name="Alt Hotel",
+        stop_type=StopType.LODGING,
+        rag_confidence=0.87,
+        estimated_cost=Decimal("95.00"),
+        currency="EUR",
+        constraint_flags={"wheelchair": True, "halal": True},
+        staged_at=datetime(2026, 5, 5, 10, 0, 0),
+    )
+    assert fo.rag_confidence == 0.87
+
+
+def test_stop_has_fallback_options_field():
+    stop = Stop(id="s1", type=StopType.LODGING, name="Hotel A")
+    assert stop.fallback_options == []
+
+
