@@ -10,7 +10,7 @@ from models.profile import ConstraintProfile
 
 log = logging.getLogger(__name__)
 
-_BASE_URL = "https://external.transitapp.com/v3/public/routes"
+_BASE_URL = "https://external.transitapp.com/v4/public/routes"
 
 def poll(entity_ids: list[str], profile: ConstraintProfile) -> list[NormalisedEvent]:
     api_key = os.getenv("TRANSIT_API_KEY")
