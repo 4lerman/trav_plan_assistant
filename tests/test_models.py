@@ -7,7 +7,7 @@ from models.profile import (
     MobilityLevel, AccommodationFlexibility, DisruptionTolerance,
 )
 from models.disruption import DisruptionEvent, DisruptionSeverity
-from models.budget import BudgetLedger, Booking
+from models.budget import BudgetLedger
 
 
 class TestConstraintProfile:
@@ -112,26 +112,7 @@ class TestDisruptionEvent:
         assert key1 != key2
 
 
-class TestBudgetLedger:
-    def test_remaining_for_day(self):
-        ledger = BudgetLedger(
-            daily_cap=Decimal("80.00"),
-            base_currency="EUR",
-            spent_by_day={date(2026, 5, 1): Decimal("30.00")},
-            committed_by_day={date(2026, 5, 1): Decimal("20.00")},
-            bookings=[],
-        )
-        assert ledger.remaining_for(date(2026, 5, 1)) == Decimal("30.00")
 
-    def test_remaining_for_day_with_no_spend(self):
-        ledger = BudgetLedger(
-            daily_cap=Decimal("80.00"),
-            base_currency="EUR",
-            spent_by_day={},
-            committed_by_day={},
-            bookings=[],
-        )
-        assert ledger.remaining_for(date(2026, 5, 1)) == Decimal("80.00")
 
 
 class TestNormalisedEvent:

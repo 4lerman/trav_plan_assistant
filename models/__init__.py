@@ -4,12 +4,12 @@ from models.profile import (
 )
 from models.itinerary import ItineraryVersion, Stop, StopType
 from models.disruption import DisruptionEvent, DisruptionSeverity, make_event_key
-from models.budget import BudgetLedger, Booking
+from models.budget import BudgetLedger, LedgerEntry, FXRate, SunkCost
 
 __all__ = [
     "ConstraintProfile", "ProfileVersion", "MobilityLevel",
     "AccommodationFlexibility", "DisruptionTolerance", "make_profile_version",
     "ItineraryVersion", "Stop", "StopType",
     "DisruptionEvent", "DisruptionSeverity", "make_event_key",
-    "BudgetLedger", "Booking",
+    "BudgetLedger", "LedgerEntry", "FXRate", "SunkCost",
 ]
