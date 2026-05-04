@@ -10,7 +10,7 @@ from models.profile import ConstraintProfile
 
 log = logging.getLogger(__name__)
 
-_BASE_URL = "https://external.transitapp.com/v4/public/routes"
+_BASE_URL = "https://external.transitapp.com/v4/public"
 
 def poll(entity_ids: list[str], profile: ConstraintProfile) -> list[NormalisedEvent]:
     api_key = os.getenv("TRANSIT_API_KEY")
@@ -27,12 +27,14 @@ def poll(entity_ids: list[str], profile: ConstraintProfile) -> list[NormalisedEv
     for route_id in entity_ids:
         try:
             resp = httpx.get(
-                f"{_BASE_URL}/{route_id}/alerts",
+                f"{_BASE_URL}/route_details",
+                params={"global_route_id": route_id},
                 headers=headers,
                 timeout=10.0,
             )
             resp.raise_for_status()
-            for item in resp.json().get("alerts", []):
+            route_data = resp.json().get("route", {})
+            for item in route_data.get("alerts", []):
                 status_code = _map_status(item.get("effect", ""))
                 if status_code:
                     events.append(NormalisedEvent(
