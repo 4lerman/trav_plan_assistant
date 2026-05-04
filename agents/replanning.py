@@ -166,6 +166,11 @@ def _best_candidate(
 
 def replanning_node(state: TripState) -> dict:
     active_id = state.get("active_disruption_id")
+    pending = dequeue_pending()
+
+    if not active_id and pending:
+        active_id = pending[0].event_key
+        
     if not active_id:
         return {}
 
@@ -183,10 +188,10 @@ def replanning_node(state: TripState) -> dict:
     ledger_svc = BudgetLedgerService(ledger_model)
 
     # Step 1 — bind versions
-    pending = [e for e in dequeue_pending() if e.event_key == active_id]
-    if not pending:
+    pending_for_id = [e for e in pending if e.event_key == active_id]
+    if not pending_for_id:
         return {"active_disruption_id": None, "replanning_context": None}
-    disruption = pending[0]
+    disruption = pending_for_id[0]
 
     ctx = ReplanningContext(
         profile_version_id=profile_ver.version_id,

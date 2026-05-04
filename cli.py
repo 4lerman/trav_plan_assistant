@@ -79,7 +79,8 @@ def main():
             print("-" * 20)
             print(f"--- {itinerary.days}-DAY ITINERARY ---")
             for stop in itinerary.stops:
-                print(f"[{stop.type.upper()}] {stop.name}")
+                doc_id_str = f" (doc_id: {stop.doc_id})" if stop.doc_id else ""
+                print(f"[{stop.type.upper()}] {stop.name}{doc_id_str}")
             print("-" * 20 + "\n")
 
 

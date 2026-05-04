@@ -10,7 +10,8 @@ _anthropic = Anthropic()
 
 def route(state: dict) -> str:
     """Priority-ordered routing — deterministic Python, no LLM."""
-    if state.get("active_disruption_id") or state.get("disruption_queue"):
+    from workers.queue import dequeue_pending
+    if state.get("active_disruption_id") or dequeue_pending():
         return "replanning"
     if state.get("profile") is None:
         return "constraint_profiler"

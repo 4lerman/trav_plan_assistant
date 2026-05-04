@@ -65,15 +65,17 @@ class TestRouting:
         assert route(state) == "constraint_profiler"
 
     def test_disruption_queue_non_empty_routes_to_replanning(self):
+        from unittest.mock import patch
         from graph.graph import route
         state = {
             "profile": object(),
             "itinerary": object(),
-            "disruption_queue": [{"event_key": "abc"}],
+            "disruption_queue": [],
             "active_disruption_id": None,
             "rag_context": {},
         }
-        assert route(state) == "replanning"
+        with patch("graph.graph.dequeue_pending", return_value=[{"event_key": "abc"}]):
+            assert route(state) == "replanning"
 
     def test_routes_to_replanning_when_active_disruption_set(self):
         from graph.graph import route
