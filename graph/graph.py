@@ -93,7 +93,8 @@ def build_graph():
     builder.add_node("constraint_profiler", constraint_profiler_node)
     builder.add_node("destination_research", destination_research_node)
     builder.add_node("itinerary_builder", itinerary_builder_node)
-    builder.add_node("replanning", _stub_node("replanning"))
+    from agents.replanning import replanning_node
+    builder.add_node("replanning", replanning_node)
     builder.add_node("orchestrator_reply", orchestrator_reply_node)
 
     builder.set_conditional_entry_point(route)
